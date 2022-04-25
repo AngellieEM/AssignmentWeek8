@@ -125,5 +125,50 @@ namespace AssignmentWeek8
 
             }
         }
+
+        private void lblVS_Click(object sender, EventArgs e)
+        {
+            // accident 
+        }
+
+        private void lblCaptainTHome_Click(object sender, EventArgs e)
+        {
+            // accident 
+        }
+
+        private void btnCheck_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //datatable Tanggal Pertandingan dan Skor
+                DataTable dtTanggalPertandingandanSkor = new DataTable();
+                sqlQuery = "SELECT date_format(match_date, '%e %M %y') AS 'Tanggal', concat(goal_home, ' - ', goal_away) AS 'Skor' FROM `match` WHERE team_home = '" + cBTimHome.SelectedValue.ToString() + "' AND team_away = '" + cBTimLuar.SelectedValue.ToString() + "'";
+                sqlCommand = new MySqlCommand(sqlQuery, sqlConnect);
+                sqlAdapter = new MySqlDataAdapter(sqlCommand);
+                sqlAdapter.Fill(dtTanggalPertandingandanSkor);
+                lblHasilTanggal.Text = dtTanggalPertandingandanSkor.Rows[0]["Tanggal"].ToString();
+                lblHasilSkor.Text = dtTanggalPertandingandanSkor.Rows[0]["Skor"].ToString();
+
+                //data grid view Hasil
+                DataTable dtDGVHasil = new DataTable();
+                sqlQuery = "SELECT d.`minute` AS 'Minute', IF(d.team_id = m.team_home, p.player_name, '') AS 'Player Name 1', IF(d.`type`='CY', 'Yellow Card', IF(d.`type`='CR', 'Red Card', IF(d.`type`='GO', 'Goal', IF(d.`type`='GP', 'Goal Penalty', IF(d.`type`='GW', 'Own Goal', IF(d.`type`='PM', 'Penalty Miss', 0)))))) AS 'Tipe 1', IF(d2.team_id = m.team_away, p2.player_name, '') AS 'Player Name 2', IF(d.`type`='CY', 'Yellow Card', IF(d.`type`='CR', 'Red Card', IF(d.`type`='GO', 'Goal', IF(d.`type`='GP', 'Goal Penalty', IF(d.`type`='GW', 'Own Goal', IF(d.`type`='PM', 'Penalty Miss', 0)))))) AS 'Tipe 2' FROM dmatch d, player p, `match` m, dmatch d2, player p2, `match` m2 WHERE d.match_id = m.match_id AND p.player_id = d.player_id AND d2.match_id = m2.match_id AND p2.player_id = d2.player_id  AND m.team_home = '" + cBTimHome.SelectedValue + "' AND m.team_away = '" + cBTimLuar.SelectedValue + "' GROUP BY d.`minute`";
+                sqlCommand = new MySqlCommand(sqlQuery, sqlConnect);
+                sqlAdapter = new MySqlDataAdapter(sqlCommand);
+                sqlAdapter.Fill(dtDGVHasil);
+
+                dgvHasil.Text = dtDGVHasil.Rows[0][0].ToString();
+
+            }
+            catch (Exception)
+            {
+
+                MessageBox.Show("Tidak ada pertandingan diantara kedua tim");
+            }
+        }
+
+        private void dgvHasil_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }
