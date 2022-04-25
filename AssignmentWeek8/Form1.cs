@@ -162,7 +162,7 @@ namespace AssignmentWeek8
             catch (Exception)
             {
 
-                MessageBox.Show("Tidak ada pertandingan diantara kedua tim");
+                MessageBox.Show("Tidak ada pertandingan diantara kedua tim"); 
             }
         }
 
